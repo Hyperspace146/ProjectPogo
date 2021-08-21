@@ -19,8 +19,7 @@ public class RocketLauncher : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Vector3 lookDirection = Camera.main.ScreenPointToRay(Input.mousePosition).direction.normalized;
-            print(lookDirection);
-            GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.LookRotation(Vector3.up, lookDirection));
+            GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, lookDirection)/*Quaternion.LookRotation(Vector3.up, lookDirection)*/);
             rocket.GetComponent<Rigidbody>().velocity = lookDirection * RocketSpeed;
 
             // have rocket despawn after a time

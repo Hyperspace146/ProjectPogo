@@ -108,5 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b204aa4a1ce8548a83a60d9c4ba844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExplosionForce: 30
+  MinExplosionKnockback: 10
+  MaxExplosionKnockback: 40
   ExplosionDuration: 0.5

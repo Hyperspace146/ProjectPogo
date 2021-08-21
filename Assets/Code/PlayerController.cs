@@ -11,19 +11,21 @@ public class PlayerController : MonoBehaviour
     public float groundDist = 0.4f;
     public LayerMask groundMask;
 
-    bool isGrounded;
+    public PhysicMaterial FrictionMaterial;
+
+    private bool isGrounded;
 
     private Rigidbody rb;
+    private Collider collider;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
     }
 
-    private void Update()
+    void Update()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDist, groundMask);
-
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             print("jump");
@@ -33,11 +35,16 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDist, groundMask);
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
 
         rb.MovePosition(rb.position + move * speed * Time.deltaTime);
+
+        // Apply friction only when the player is grounded
+        collider.material = isGrounded ? FrictionMaterial : null;
     }
 }
