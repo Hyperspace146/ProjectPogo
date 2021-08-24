@@ -11,10 +11,8 @@ public class PlayerController : MonoBehaviour
     public float groundDist = 0.4f;
     public LayerMask groundMask;
 
-    [Tooltip("Change in angle of velocity per physics step when strafing (in degrees).")]
-    public float deltaTheta = 1;
-
-    public PhysicMaterial FrictionMaterial;
+    [Tooltip("Change in angle of velocity per second when strafing (in degrees).")]
+    public float deltaTheta = 0.0007f;
 
     public bool isGrounded;
 
@@ -53,16 +51,13 @@ public class PlayerController : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        rb.MovePosition(rb.position + move * speed * Time.deltaTime);
-
-        // Apply friction only when the player is grounded
-        collider.material = isGrounded ? FrictionMaterial : null;
+        rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
     }
 
     void AirMove()
     {
         float x = Input.GetAxis("Horizontal");
-        float theta;
+        float theta = deltaTheta * Time.fixedDeltaTime;
         if (x > 0)
         {
             theta = deltaTheta * -1;

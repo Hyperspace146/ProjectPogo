@@ -109,6 +109,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxExplosionKnockback: 40
-  MinExplosionKnockbackRatio: 0.211
+  MinExplosionKnockbackRatio: 0.096
   ExplosionDuration: 0.5
   MaxDamage: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ExplosionKnockback : MonoBehaviour
 {
-    [Tooltip("Maximum magnitude of explosion knockback. Occurs near the center of the explosion.")]
+    [Tooltip("Maximum magnitude of explosion knockback, which occurs near the center of the explosion.")]
     public float MaxExplosionKnockback;
 
     [Tooltip("The percentage of the maximum explosion knockback that will occur at the edge of the explosion.")]
@@ -35,6 +35,7 @@ public class ExplosionKnockback : MonoBehaviour
         if (collidingRB != null)
         {
             // manual implementation of explosion kb
+
             /*Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
             Vector3 explosionForceDirection = (explosionContactPoint - transform.position).normalized;
 
@@ -49,11 +50,20 @@ public class ExplosionKnockback : MonoBehaviour
 
             print(explosionForce);
             collidingRB.AddForceAtPosition(explosionForce, explosionContactPoint, ForceMode.Impulse);*/
+            
+
+            // Note: We need the scale of the gameobject so we can calculate the radius of the collider.
+            // In finding the scale, we assume the scale in each axis is the same (since the explosion is spherical), which
+            // is what we're checking below
+            if (transform.localScale.x != transform.localScale.y || transform.localScale.y != transform.localScale.z)
+            {
+                Debug.LogError("Explosion object does not have the same scale value for the x, y, and z axes.");
+            }
 
             // Make the explosion radius bigger than the collider radius so that we guarantee a minimum amount of knockback 
             // when colliding with the very edge of the collider
-            float colliderRadius = (GetComponent<SphereCollider>().radius * transform.lossyScale.x) * 1.5f;
-            float explosionRadius = colliderRadius;
+            float colliderRadius = (GetComponent<SphereCollider>().radius * transform.lossyScale.x);
+            float explosionRadius = colliderRadius / (1 - MinExplosionKnockbackRatio);
             collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, 0f, ForceMode.Impulse);
         }
     }
