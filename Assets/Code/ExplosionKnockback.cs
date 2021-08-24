@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class ExplosionKnockback : MonoBehaviour
 {
-    [Tooltip("Minimum magnitude of explosion knockback. Occurs when at the edge of the explosion radius.")]
-    public float MinExplosionKnockback;
-
-    [Tooltip("Maximum magnitude of explosion knockback. Occurs when near the center of the explosion.")]
+    [Tooltip("Maximum magnitude of explosion knockback. Occurs near the center of the explosion.")]
     public float MaxExplosionKnockback;
+
+    [Tooltip("The percentage of the maximum explosion knockback that will occur at the edge of the explosion.")]
+    [Range(0, 1)]
+    public float MinExplosionKnockbackRatio;
 
     [Tooltip("Time in seconds the explosion will last.")]
     public float ExplosionDuration;
@@ -33,8 +34,8 @@ public class ExplosionKnockback : MonoBehaviour
         Rigidbody collidingRB = other.gameObject.GetComponent<Rigidbody>();
         if (collidingRB != null)
         {
-            print("hi");
-            Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
+            // manual implementation of explosion kb
+            /*Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
             Vector3 explosionForceDirection = (explosionContactPoint - transform.position).normalized;
 
             // Set up a multiplier that inversely scales based on the object's distance from the center of the explosion
@@ -47,8 +48,13 @@ public class ExplosionKnockback : MonoBehaviour
             Vector3 explosionForce = explosionForceDirection * explosionKnockback;
 
             print(explosionForce);
-            collidingRB.AddForceAtPosition(explosionForce, explosionContactPoint, ForceMode.Impulse);
-            //collidingRB.AddExplosionForce(ExplosionForce, transform.position, <SphereCollider>().radius * transform.lossyScale.x, 0f, ForceMode.Impulse);
+            collidingRB.AddForceAtPosition(explosionForce, explosionContactPoint, ForceMode.Impulse);*/
+
+            // Make the explosion radius bigger than the collider radius so that we guarantee a minimum amount of knockback 
+            // when colliding with the very edge of the collider
+            float colliderRadius = (GetComponent<SphereCollider>().radius * transform.lossyScale.x) * 1.5f;
+            float explosionRadius = colliderRadius;
+            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, 0f, ForceMode.Impulse);
         }
     }
 }

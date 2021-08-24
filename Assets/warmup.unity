@@ -166,8 +166,8 @@ GameObject:
   - component: {fileID: 272807542}
   - component: {fileID: 272807541}
   - component: {fileID: 272807547}
-  - component: {fileID: 272807546}
   - component: {fileID: 272807545}
+  - component: {fileID: 272807546}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -284,13 +284,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 12
-  jumpHeight: 3000
+  jumpHeight: 5000
   groundCheck: {fileID: 1016754370}
   groundDist: 0.4
   groundMask:
     serializedVersion: 2
     m_Bits: 256
-  FrictionMaterial: {fileID: 13400000, guid: a694be5716ab7c54e8a13536ec135bdd, type: 2}
+  deltaTheta: 0.0005
+  FrictionMaterial: {fileID: 0}
+  isGrounded: 0
 --- !u!54 &272807547
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -656,6 +658,7 @@ Transform:
   - {fileID: 1537610703}
   - {fileID: 1440175571}
   - {fileID: 1520235317}
+  - {fileID: 1368505494}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -780,7 +783,7 @@ Transform:
   m_GameObject: {fileID: 1105339449}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.6112, y: -5.4597063, z: 3.5116553}
-  m_LocalScale: {x: 10.680131, y: 1.5844805, z: 12.596195}
+  m_LocalScale: {x: 20, y: 1.5844805, z: 20}
   m_Children: []
   m_Father: {fileID: 876614747}
   m_RootOrder: 0
@@ -987,7 +990,7 @@ GameObject:
   - component: {fileID: 1368505493}
   - component: {fileID: 1368505492}
   - component: {fileID: 1368505491}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1063,12 +1066,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1368505490}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.16, y: 10.72, z: 12.35}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.7042418, y: 4.803294, z: 15.861656}
   m_LocalScale: {x: 8.642671, y: 0.50457066, z: 6.3527913}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 876614747}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1440175570
 GameObject:
