@@ -14,7 +14,10 @@ public class PlayerController : MonoBehaviour
     public LayerMask GroundMask;
 
     [Tooltip("Change in angle of velocity per second when strafing (in degrees).")]
-    public float DeltaTheta = 0.0007f;
+    public float MaxDeltaTheta = 0.0005f;
+
+    [Tooltip("Maximum allowed vel angle from look direction (in degrees).")]
+    public float MaxAngRelativeToLook = 85;
 
     private bool isGrounded;
 
@@ -47,7 +50,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // AirMove();
             AirStrafe();
         }
     }
@@ -77,35 +79,50 @@ public class PlayerController : MonoBehaviour
         float fricX = rb.velocity.x * frictionMultiplier;
         float fricZ = rb.velocity.z * frictionMultiplier;
         rb.velocity = new Vector3(fricX, rb.velocity.y, fricZ);
+    }
 
-        print(rb.velocity);
+    void AirMove()
+    {
+
     }
 
     void AirStrafe()
     {
+        // Calculate the angle between the current look direction and current velocity
+        float angle = Vector3.Dot(rb.transform.forward, rb.velocity);
+        angle /= rb.transform.forward.magnitude;
+        angle /= rb.velocity.magnitude;
+        angle = Mathf.Acos(angle);
+        angle *= Mathf.Rad2Deg;
+
+        // Collect horizontal "a" and "d" key inputs
         float x = Input.GetAxis("Horizontal");
-        float theta = DeltaTheta * Time.fixedDeltaTime;
-        if (x > 0)
-        {
-            theta = DeltaTheta * -1;
-        }
-        else if (x < 0)
-        {
-            theta = DeltaTheta;
-        }
-        else
+
+        if (Mathf.Abs(angle) > MaxAngRelativeToLook || x == 0)
         {
             return;
         }
-        theta *= Mathf.Rad2Deg;
 
+        float deltaTheta = ((MaxAngRelativeToLook - angle) / MaxAngRelativeToLook) * MaxDeltaTheta * Time.fixedDeltaTime;
+        //float deltaTheta = MaxDeltaTheta * Time.fixedDeltaTime;
+
+        // Determines is Left or Right direction
+        if (x > 0)
+        {
+            deltaTheta *= -1;
+        }
+
+        print(deltaTheta);
+
+        // Instantiation of empty, to be adjusted, velocity vector
         Vector3 newVelocity = new Vector3(0, rb.velocity.y, 0);
 
         // Use matrix multiplication using the rotation matrix to rotate our current velocity vector 
         // by theta degrees (the magnitude of our velocity vector still stays the same)
-        newVelocity.x = Mathf.Cos(theta) * rb.velocity.x + -Mathf.Sin(theta) * rb.velocity.z;
-        newVelocity.z = Mathf.Sin(theta) * rb.velocity.x + Mathf.Cos(theta) * rb.velocity.z;
+        newVelocity.x = Mathf.Cos(deltaTheta) * rb.velocity.x + -Mathf.Sin(deltaTheta) * rb.velocity.z;
+        newVelocity.z = Mathf.Sin(deltaTheta) * rb.velocity.x + Mathf.Cos(deltaTheta) * rb.velocity.z;
 
+        // Apply changed directional velocity to rigidbody
         rb.velocity = newVelocity;
     }
 }
