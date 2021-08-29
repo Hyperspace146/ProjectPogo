@@ -88,10 +88,12 @@ public class PlayerController : MonoBehaviour
 
     void AirStrafe()
     {
-        // Calculate the angle between the current look direction and current velocity
-        float angle = Vector3.Dot(rb.transform.forward, rb.velocity);
-        angle /= rb.transform.forward.magnitude;
-        angle /= rb.velocity.magnitude;
+        // Calculate the angle between the current look direction and current velocity (in ONLY the xz plane)
+        Vector2 lookDirection = new Vector2(transform.forward.x, transform.forward.z);
+        Vector2 currentVelocity = new Vector2(rb.velocity.x, rb.velocity.z);
+        float angle = Vector3.Dot(lookDirection, currentVelocity);
+        angle /= lookDirection.magnitude;
+        angle /= currentVelocity.magnitude;
         angle = Mathf.Acos(angle);
         angle *= Mathf.Rad2Deg;
 
