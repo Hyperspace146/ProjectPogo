@@ -18,26 +18,21 @@ public class RocketLauncher : MonoBehaviour
     public float DelayBetweenShots = 0.2f;
     [Tooltip("Max number of rockets that can be stored in the clip.")]
     public int ClipSize = 8;
-    public int CurrentAmmo;
+    public float CurrentAmmo;
     [Tooltip("The time in seconds it takes to reload a rocket into the clip. Will reload passively," +
         "regardless of whether the player is currently shooting or not.")]
     public float ReloadTime = 0.5f;
 
     private float lastTimeShot;
-    private bool currentlyReloading = false;
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && CurrentAmmo > 0 && lastTimeShot + DelayBetweenShots < Time.time)
+        if (Input.GetButtonDown("Fire1") && CurrentAmmo >= 1 && lastTimeShot + DelayBetweenShots < Time.time)
         {
             Shoot();
         }
 
-        if (CurrentAmmo < ClipSize && !currentlyReloading)
-        {
-            StartCoroutine(ReloadCoroutine());
-        }
+        CurrentAmmo = Mathf.Min(ClipSize, CurrentAmmo + (Time.deltaTime / ReloadTime));
     }
     
     public void Shoot()
@@ -58,15 +53,6 @@ public class RocketLauncher : MonoBehaviour
             // Update last time shot to now
             lastTimeShot = Time.time;
         }
-    }
-
-    public IEnumerator ReloadCoroutine()
-    {
-        currentlyReloading = true;
-        // Wait for the specified reload time before refilling the clip
-        yield return new WaitForSeconds(ReloadTime);
-        CurrentAmmo++;
-        currentlyReloading = false;
     }
 
     IEnumerator DespawnRocket(GameObject rocket, float seconds)
