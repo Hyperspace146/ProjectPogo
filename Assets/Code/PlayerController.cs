@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask GroundMask;
 
     [Tooltip("Change in angle of velocity per second when strafing (in degrees).")]
-    public float MaxDeltaTheta = 0.0005f;
+    public float MaxDeltaTheta = 4;
 
     [Tooltip("Maximum allowed vel angle from look direction (in degrees).")]
     public float MaxAngRelativeToLook = 85;

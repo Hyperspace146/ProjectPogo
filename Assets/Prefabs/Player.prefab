@@ -134,6 +134,10 @@ MonoBehaviour:
   RocketPrefab: {fileID: 2153355749987532397, guid: b6c7eb411aafe4943be8f3c0205c2ac9, type: 3}
   RocketSpeed: 40
   TimeBeforeDespawn: 10
+  DelayBetweenShots: 0.2
+  ClipSize: 8
+  ClipSizeHUDText: {fileID: 0}
+  ReloadTime: 0.5
 --- !u!114 &8080800269781301777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +159,8 @@ MonoBehaviour:
   GroundMask:
     serializedVersion: 2
     m_Bits: 256
-  DeltaTheta: 0.0007
+  MaxDeltaTheta: 3
+  MaxAngRelativeToLook: 85
 --- !u!1 &8080800269902718524
 GameObject:
   m_ObjectHideFlags: 0
