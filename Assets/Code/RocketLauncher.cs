@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 /*
  * Allows the player to launch a rocket in the direction that they click.
  */
@@ -17,30 +18,26 @@ public class RocketLauncher : MonoBehaviour
     public float DelayBetweenShots = 0.2f;
     [Tooltip("Max number of rockets that can be stored in the clip.")]
     public int ClipSize = 8;
-    [Tooltip("The UI Text component that displays on screen.")]
-    public Text ClipSizeHUDText;
+    public int CurrentAmmo;
     [Tooltip("The time in seconds it takes to reload a rocket into the clip. Will reload passively," +
         "regardless of whether the player is currently shooting or not.")]
     public float ReloadTime = 0.5f;
 
-    private int currentAmmo;
     private float lastTimeShot;
     private bool currentlyReloading = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && currentAmmo > 0 && lastTimeShot + DelayBetweenShots < Time.time)
+        if (Input.GetButtonDown("Fire1") && CurrentAmmo > 0 && lastTimeShot + DelayBetweenShots < Time.time)
         {
             Shoot();
         }
 
-        if (currentAmmo < ClipSize && !currentlyReloading)
+        if (CurrentAmmo < ClipSize && !currentlyReloading)
         {
             StartCoroutine(ReloadCoroutine());
         }
-
-        ClipSizeHUDText.text = currentAmmo.ToString();
     }
     
     public void Shoot()
@@ -49,7 +46,7 @@ public class RocketLauncher : MonoBehaviour
         if (lastTimeShot + DelayBetweenShots < Time.time)
         {
             // Decrease ammo by one shot
-            currentAmmo -= 1;
+            CurrentAmmo -= 1;
 
             Vector3 lookDirection = Camera.main.ScreenPointToRay(Input.mousePosition).direction.normalized;
             GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, lookDirection));
@@ -68,7 +65,7 @@ public class RocketLauncher : MonoBehaviour
         currentlyReloading = true;
         // Wait for the specified reload time before refilling the clip
         yield return new WaitForSeconds(ReloadTime);
-        currentAmmo++;
+        CurrentAmmo++;
         currentlyReloading = false;
     }
 

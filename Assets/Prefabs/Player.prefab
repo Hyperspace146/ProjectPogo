@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8080800269781301776}
   - component: {fileID: 8080800269781301778}
   - component: {fileID: 8080800269781301777}
+  - component: {fileID: 6969449916977331923}
   m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
@@ -136,7 +137,7 @@ MonoBehaviour:
   TimeBeforeDespawn: 10
   DelayBetweenShots: 0.2
   ClipSize: 8
-  ClipSizeHUDText: {fileID: 0}
+  CurrentAmmo: 0
   ReloadTime: 0.5
 --- !u!114 &8080800269781301777
 MonoBehaviour:
@@ -161,6 +162,38 @@ MonoBehaviour:
     m_Bits: 256
   MaxDeltaTheta: 3
   MaxAngRelativeToLook: 85
+--- !u!114 &6969449916977331923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8080800269781301791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbf6a4e12a877647be6d363a70cdd25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 100
+  CurrentHealth: 100
+  OnHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8080800269902718524
 GameObject:
   m_ObjectHideFlags: 0

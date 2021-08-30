@@ -111,4 +111,4 @@ MonoBehaviour:
   MaxExplosionKnockback: 25
   MinExplosionKnockbackRatio: 0.498
   ExplosionDuration: 0.5
-  MaxDamage: 0
+  MaxDamage: 10
