@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float GroundAcceleration = 12f;
+    public float GroundAcceleration = 12;
     public float MaxGroundedSpeed = 15;
     public float Friction = 1;
     public float JumpHeight = 5000f;
@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            print("jump");
             rb.AddForce(Vector3.up * Mathf.Sqrt(JumpHeight * -2f * Physics.gravity.y));
         }
     }
@@ -45,7 +44,6 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            //rb.drag
             GroundMove();
         }
         else
@@ -61,21 +59,25 @@ public class PlayerController : MonoBehaviour
         moveDirection = transform.TransformDirection(moveDirection);
         moveDirection.Normalize();
 
-        rb.velocity += moveDirection * GroundAcceleration * Time.fixedDeltaTime;
+        // Calculate new horizontal grounded speed
+        Vector3 move = moveDirection * GroundAcceleration * Time.fixedDeltaTime;
+        move = new Vector3(rb.velocity.x, 0, rb.velocity.z) + move;
 
-        // Cap grounded speed
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, MaxGroundedSpeed);
+        // Cap horizontal grounded speed
+        move = Vector3.ClampMagnitude(move, MaxGroundedSpeed);
 
-        // Apply friction in opposite direction of current velocity
-        // Option 1: rb.AddForce(rb.velocity.normalized * -1 * Friction);
-        // Try rigidbody drag maybe?
+        move.y = rb.velocity.y;
+        rb.velocity = move;
 
         // the *= makes us slow down very slow when we're initially moving very slow (i think). try straight subtracting from velocity instead?
         // but then we'll slow down very slowly if we're moving really fast. maybe that's what we want though?
         float speed = rb.velocity.magnitude;
         float frictionMultiplier = speed - (Friction * Time.fixedDeltaTime);
         frictionMultiplier = Mathf.Max(0, frictionMultiplier);
-        if (speed > 0) frictionMultiplier /= speed;
+        if (speed > 0)
+        {
+            frictionMultiplier /= speed;
+        }
         float fricX = rb.velocity.x * frictionMultiplier;
         float fricZ = rb.velocity.z * frictionMultiplier;
         rb.velocity = new Vector3(fricX, rb.velocity.y, fricZ);
@@ -106,7 +108,6 @@ public class PlayerController : MonoBehaviour
         }
 
         float deltaTheta = ((MaxAngRelativeToLook - angle) / MaxAngRelativeToLook) * MaxDeltaTheta * Time.fixedDeltaTime;
-        //float deltaTheta = MaxDeltaTheta * Time.fixedDeltaTime;
 
         // Determines is Left or Right direction
         if (x > 0)

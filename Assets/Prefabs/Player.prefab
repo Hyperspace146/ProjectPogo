@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShootPoint: {fileID: 8080800269902718515}
   RocketPrefab: {fileID: 2153355749987532397, guid: b6c7eb411aafe4943be8f3c0205c2ac9, type: 3}
-  RocketSpeed: 40
+  RocketSpeed: 60
   TimeBeforeDespawn: 10
   DelayBetweenShots: 0.2
   ClipSize: 8
@@ -160,7 +160,7 @@ MonoBehaviour:
   GroundMask:
     serializedVersion: 2
     m_Bits: 256
-  MaxDeltaTheta: 3
+  MaxDeltaTheta: 4
   MaxAngRelativeToLook: 85
 --- !u!114 &6969449916977331923
 MonoBehaviour:

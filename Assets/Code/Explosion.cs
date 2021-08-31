@@ -15,6 +15,9 @@ public class Explosion : MonoBehaviour
     [Range(0, 1)]
     public float MinExplosionKnockbackRatio;
 
+    [Tooltip("Magnitude of the extra upward lift caused by the explosion.")]
+    public float UpwardLiftModifier;
+
     [Tooltip("Time in seconds the explosion will last.")]
     public float ExplosionDuration;
 
@@ -69,12 +72,12 @@ public class Explosion : MonoBehaviour
             // guarantee a minimum amount of knockback when colliding with the very edge of the collider
             float colliderRadius = (GetComponent<SphereCollider>().radius * transform.localScale.x);
             float explosionRadius = colliderRadius / (1 - MinExplosionKnockbackRatio);
-            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, 0f, ForceMode.Impulse);
+            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, UpwardLiftModifier, ForceMode.Impulse);
 
             // Apply damage to non-player objects that decreases based on distance from the center of the explosion
-            //if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
-            //    return;
-            //}
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                return;
+            }
 
             Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
             float distance = Vector3.Distance(explosionContactPoint, transform.position);
