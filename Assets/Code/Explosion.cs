@@ -37,7 +37,7 @@ public class Explosion : MonoBehaviour
     }
 
     // "other" represents the object (e.g. player or enemy) colliding with this explosion hitbox
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         Rigidbody collidingRB = other.gameObject.GetComponent<Rigidbody>();
         if (collidingRB != null)

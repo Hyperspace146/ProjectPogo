@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerJoe : MonoBehaviour
 {
     public float GroundAcceleration = 12;
+    public float AirAcceleration = 15;
     public float MaxGroundedSpeed = 15;
+    public float MaxAerialSpeed = 15;
     public float Friction = 1;
     public float JumpHeight = 5000f;
 
@@ -13,14 +15,14 @@ public class PlayerController : MonoBehaviour
     public float GroundDist = 0.4f;
     public LayerMask GroundMask;
 
-    [Tooltip("Affects how sharp a turn the player will make when strafing.")]
-    public float StrafeSpeed = 50;
+    [Tooltip("Change in angle of velocity per second when strafing (in degrees).")]
+    public float MaxDeltaTheta = 4;
 
-    [Tooltip("Maximum angle in degrees that you can strafe in one second.")]
-    public float MaxStrafeAnglePerSecond = 180;
+    [Tooltip("Maximum allowed vel angle from look direction (in degrees).")]
+    public float MaxAngRelativeToLook = 85;
+
 
     private bool isGrounded;
-    private Vector2 lastLookDirection;
 
     private Rigidbody rb;
     private Collider collider;
@@ -29,7 +31,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
-        lastLookDirection = new Vector2(transform.forward.x, transform.forward.z);
     }
 
     void Update()
@@ -50,6 +51,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            AirMove();
             AirStrafe();
         }
     }
@@ -87,41 +89,43 @@ public class PlayerController : MonoBehaviour
 
     void AirMove()
     {
+        //Movement Vector
+        Vector3 moveDirection = new Vector3(0, 0, Input.GetAxis("Vertical"));
+        moveDirection = transform.TransformDirection(moveDirection);
+        moveDirection.Normalize();
 
+        Vector3 move = moveDirection * AirAcceleration * Time.fixedDeltaTime;
+        move = new Vector3(rb.velocity.x, 0, rb.velocity.z) + move;
+        move = Vector3.ClampMagnitude(move, MaxAerialSpeed);
+        move.y = rb.velocity.y;
+       rb.velocity = move;
     }
 
     void AirStrafe()
     {
-        // Using the dot product equation, calculate the change in the angle of the current look direction in the x-z plane.
-        // The change in angle will be negative if turning clockwise, positive if counter-clockwise.
-        Vector2 currentLookDirection = new Vector2(transform.forward.x, transform.forward.z);
-        float changeInLookAngle = Vector2.Dot(currentLookDirection, lastLookDirection);
-        changeInLookAngle /= (lastLookDirection.magnitude * currentLookDirection.magnitude);
-        changeInLookAngle = Mathf.Acos(changeInLookAngle);
-
-        //print("last: " + lastLookDirection);
-        //print("current: " + currentLookDirection);
-
-        //print(changeInLookAngle);
-
-        lastLookDirection = currentLookDirection;
+        // Calculate the angle between the current look direction and current velocity (in ONLY the xz plane)
+        Vector2 lookDirection = new Vector2(transform.forward.x, transform.forward.z);
+        Vector2 currentVelocity = new Vector2(rb.velocity.x, rb.velocity.z);
+        float angle = Vector3.Dot(lookDirection, currentVelocity);
+        angle /= lookDirection.magnitude;
+        angle /= currentVelocity.magnitude;
+        angle = Mathf.Acos(angle);
+        angle *= Mathf.Rad2Deg;
 
         // Collect horizontal "a" and "d" key inputs
         float x = Input.GetAxis("Horizontal");
 
-        // Delta theta is the change in angle that the player's velocity will undergo this physics step as a 
-        // result of strafing
-        float deltaTheta = changeInLookAngle * StrafeSpeed * Time.fixedDeltaTime;
+        if (Mathf.Abs(angle) > MaxAngRelativeToLook || x == 0)
+        {
+            return;
+        }
 
+        float deltaTheta = ((MaxAngRelativeToLook - angle) / MaxAngRelativeToLook) * MaxDeltaTheta * Time.fixedDeltaTime;
+
+        // Determines is Left or Right direction
         if (x > 0)
         {
             deltaTheta *= -1;
-        }
-
-        // Prevent strafing if they've strafed at too harsh an angle, or if they didn't press any strafe buttons
-        if (Mathf.Abs(changeInLookAngle) * Mathf.Rad2Deg > MaxStrafeAnglePerSecond || x == 0)
-        {
-            return;
         }
 
         print(deltaTheta);
@@ -129,12 +133,12 @@ public class PlayerController : MonoBehaviour
         // Instantiation of empty, to be adjusted, velocity vector
         Vector3 newVelocity = new Vector3(0, rb.velocity.y, 0);
 
-        // Rotate our current velocity vector (using matrix multiplication with the rotation matrix)
-        // by theta degrees. The magnitude of our velocity vector stays the same after rotation
+        // Use matrix multiplication using the rotation matrix to rotate our current velocity vector 
+        // by theta degrees (the magnitude of our velocity vector still stays the same)
         newVelocity.x = Mathf.Cos(deltaTheta) * rb.velocity.x + -Mathf.Sin(deltaTheta) * rb.velocity.z;
         newVelocity.z = Mathf.Sin(deltaTheta) * rb.velocity.x + Mathf.Cos(deltaTheta) * rb.velocity.z;
 
-        // Update rigidbody with newly rotated velocity vector
+        // Apply changed directional velocity to rigidbody
         rb.velocity = newVelocity;
     }
 }
