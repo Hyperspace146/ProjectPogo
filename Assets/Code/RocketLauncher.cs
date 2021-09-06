@@ -42,41 +42,34 @@ public class RocketLauncher : MonoBehaviour
     
     public void Shoot()
     {
-        // Shoot if able to (not reloading, has ammo, and the time delay between shots has passed)
-        if (lastTimeShot + DelayBetweenShots < Time.time)
+        // Decrease ammo by one shot
+        CurrentAmmo -= 1;
+
+        // Find the point in world space where the player is aiming at with their crosshair
+        RaycastHit hit;
+        Vector3 rocketTargetPoint;
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.ScreenPointToRay(Input.mousePosition).direction, out hit, MaxRocketTargetDistance, RocketRaycastTargetMask))
         {
-            // Decrease ammo by one shot
-            CurrentAmmo -= 1;
-
-            // Find the point in world space where the player is aiming at with their crosshair
-            RaycastHit hit;
-            Vector3 rocketTargetPoint;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.ScreenPointToRay(Input.mousePosition).direction, out hit, MaxRocketTargetDistance, RocketRaycastTargetMask))
-            {
-                rocketTargetPoint = hit.point;
-            } 
-            else
-            {
-                rocketTargetPoint = Camera.main.transform.position + Camera.main.ScreenPointToRay(Input.mousePosition).direction * MaxRocketTargetDistance;
-            }
-            
-            //Vector3 lookDirection = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
-            print(rocketTargetPoint);
-
-            // Now we find the vector pointing from the SHOOT POINT to where the player's pointing in world space
-            Vector3 shootDirection = rocketTargetPoint - ShootPoint.position;
-            shootDirection.Normalize();
-
-            // Now spawn the rocket with velocity in that direction. The rotation calc makes sure it points its head in the direction of shooting.
-            GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, shootDirection));
-            rocket.GetComponent<Rigidbody>().velocity = shootDirection * RocketSpeed;
-
-            // have rocket despawn after a time
-            StartCoroutine(DespawnRocket(rocket, TimeBeforeDespawn));
-
-            // Update last time shot to now
-            lastTimeShot = Time.time;
+            rocketTargetPoint = hit.point;
+        } 
+        else
+        {
+            rocketTargetPoint = Camera.main.transform.position + Camera.main.ScreenPointToRay(Input.mousePosition).direction * MaxRocketTargetDistance;
         }
+
+        // Now we find the vector pointing from the SHOOT POINT to where the player's pointing in world space
+        Vector3 shootDirection = rocketTargetPoint - ShootPoint.position;
+        shootDirection.Normalize();
+
+        // Now spawn the rocket with velocity in that direction. The rotation calc makes sure it points its head in the direction of shooting.
+        GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, shootDirection));
+        rocket.GetComponent<Rigidbody>().velocity = shootDirection * RocketSpeed;
+
+        // have rocket despawn after a time
+        StartCoroutine(DespawnRocket(rocket, TimeBeforeDespawn));
+
+        // Update last time shot to now
+        lastTimeShot = Time.time;
     }
 
     IEnumerator DespawnRocket(GameObject rocket, float seconds)
