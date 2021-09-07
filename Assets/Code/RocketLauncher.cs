@@ -32,7 +32,7 @@ public class RocketLauncher : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && CurrentAmmo >= 1 && lastTimeShot + DelayBetweenShots < Time.time)
+        if ((Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.L)) && CurrentAmmo >= 1 && lastTimeShot + DelayBetweenShots < Time.time)
         {
             Shoot();
         }
@@ -42,6 +42,8 @@ public class RocketLauncher : MonoBehaviour
     
     public void Shoot()
     {
+        print("shoot time: " + Time.time);
+
         // Decrease ammo by one shot
         CurrentAmmo -= 1;
 

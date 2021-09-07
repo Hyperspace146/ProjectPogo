@@ -10,18 +10,10 @@ public class DetonateOnContact : MonoBehaviour
 {
     public GameObject ExplosionPrefab;
 
-    /*private void OnTriggerEnter(Collider other)
-    {
-        // Use a raycast to find the point of contact, then spawn a rocket at that point
-        RaycastHit hit;
-        Physics.Raycast(transform.position, transform.forward, out hit);
-
-        Instantiate(ExplosionPrefab, hit.point, Quaternion.identity);
-        Destroy(this);
-    }*/
-
     private void OnCollisionEnter(Collision collision)
     {
+        print("Collision time: " + Time.time);
+
         Instantiate(ExplosionPrefab, collision.GetContact(0).point, Quaternion.identity);
         Destroy(this.gameObject);
     }

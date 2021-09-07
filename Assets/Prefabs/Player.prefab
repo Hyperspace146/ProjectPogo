@@ -133,15 +133,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShootPoint: {fileID: 8080800269902718515}
   RocketPrefab: {fileID: 2153355749987532397, guid: b6c7eb411aafe4943be8f3c0205c2ac9, type: 3}
-  RocketSpeed: 50
+  RocketSpeed: 100
   TimeBeforeDespawn: 10
   DelayBetweenShots: 0.2
   ClipSize: 8
   CurrentAmmo: 0
   ReloadTime: 0.5
-  RocketRaycastMask:
+  RocketRaycastTargetMask:
     serializedVersion: 2
-    m_Bits: 819
+    m_Bits: 0
   MaxRocketTargetDistance: 1000
 --- !u!114 &8080800269781301777
 MonoBehaviour:

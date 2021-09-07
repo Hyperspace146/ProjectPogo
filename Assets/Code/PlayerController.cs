@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Tooltip("Choose which type of air movement implementation to use.")]
+    public int AirMoveType = 0;
+
+    public float AirAcceleration = 12;
     public float GroundAcceleration = 12;
     public float MaxGroundedSpeed = 15;
     public float Friction = 1;
@@ -50,7 +54,15 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            AirStrafe();
+            switch (AirMoveType)
+            {
+                case 0:
+                    AirStrafe();
+                    break;
+                case 1:
+                    AirMove1();
+                    break;
+            }
         }
     }
 
@@ -85,9 +97,31 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector3(fricX, rb.velocity.y, fricZ);
     }
 
-    void AirMove()
-    {
+    /*
+     * In TF2, when in the air and pressing WASD seems a force is applied in the direction of
+       the WASD input relative to the player's current look direction.
 
+       When strafing by holding A or D with the look direction aligned with the current velocity,
+       the air movement force will be perpendicular with the current velocity, and the resulting velocity
+       will have been rotated to the left or right. (Note that the magnitude of the resulting velocity may 
+       be clamped as to not surpass the previous velocity).
+     */
+    void AirMove1()
+    {
+        // Find the direction of the air movement force based on WASD player input
+        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = transform.TransformDirection(moveDirection);  // Make the input vector relative to current look direction
+        moveDirection.Normalize();
+
+        // Add this horizontal air movement force to the player's horizontal velocity
+        Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration;
+        Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;
+
+        // Clamp the magnitude of the horizontal velocity to not be greater than it was before
+        newHoriVelocity = Vector3.ClampMagnitude(newHoriVelocity, prevHoriVelocity.magnitude);
+
+        rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
     }
 
     void AirStrafe()
@@ -99,17 +133,12 @@ public class PlayerController : MonoBehaviour
         changeInLookAngle /= (lastLookDirection.magnitude * currentLookDirection.magnitude);
         changeInLookAngle = Mathf.Acos(changeInLookAngle);
 
-        //print("last: " + lastLookDirection);
-        //print("current: " + currentLookDirection);
-
-        //print(changeInLookAngle);
-
         lastLookDirection = currentLookDirection;
 
         // Collect horizontal "a" and "d" key inputs
         float x = Input.GetAxis("Horizontal");
 
-        // Delta theta is the change in angle that the player's velocity will undergo this physics step as a 
+        // Delta theta is the change in angle that the player's velocity will undergo for this physics step as a
         // result of strafing
         float deltaTheta = changeInLookAngle * StrafeSpeed * Time.fixedDeltaTime;
 
