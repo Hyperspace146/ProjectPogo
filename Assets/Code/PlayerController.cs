@@ -6,8 +6,12 @@ public class PlayerController : MonoBehaviour
 {
     [Tooltip("Choose which type of air movement implementation to use.")]
     public int AirMoveType = 0;
-
+    [Tooltip("How fast the player will accelerate/decelerate in the air.")]
     public float AirAcceleration = 12;
+    [Tooltip("The percentage of the current air speed that will be added to base air acceleration.")]
+    [Range(0, 1)]
+    public float AirAccelerationScaling = 0.5f;
+
     public float GroundAcceleration = 12;
     public float MaxGroundedSpeed = 15;
     public float Friction = 1;
@@ -62,6 +66,9 @@ public class PlayerController : MonoBehaviour
                 case 1:
                     AirMove1();
                     break;
+                case 2:
+                    AirMove2();
+                    break;
             }
         }
     }
@@ -98,32 +105,8 @@ public class PlayerController : MonoBehaviour
     }
 
     /*
-     * In TF2, when in the air and pressing WASD seems a force is applied in the direction of
-       the WASD input relative to the player's current look direction.
-
-       When strafing by holding A or D with the look direction aligned with the current velocity,
-       the air movement force will be perpendicular with the current velocity, and the resulting velocity
-       will have been rotated to the left or right. (Note that the magnitude of the resulting velocity may 
-       be clamped as to not surpass the previous velocity).
-     */
-    void AirMove1()
-    {
-        // Find the direction of the air movement force based on WASD player input
-        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        moveDirection = transform.TransformDirection(moveDirection);  // Make the input vector relative to current look direction
-        moveDirection.Normalize();
-
-        // Add this horizontal air movement force to the player's horizontal velocity
-        Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration;
-        Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;
-
-        // Clamp the magnitude of the horizontal velocity to not be greater than it was before
-        newHoriVelocity = Vector3.ClampMagnitude(newHoriVelocity, prevHoriVelocity.magnitude);
-
-        rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
-    }
-
+     * Strafe based on the change in angle of look direction.
+     */ 
     void AirStrafe()
     {
         // Using the dot product equation, calculate the change in the angle of the current look direction in the x-z plane.
@@ -131,6 +114,7 @@ public class PlayerController : MonoBehaviour
         Vector2 currentLookDirection = new Vector2(transform.forward.x, transform.forward.z);
         float changeInLookAngle = Vector2.Dot(currentLookDirection, lastLookDirection);
         changeInLookAngle /= (lastLookDirection.magnitude * currentLookDirection.magnitude);
+        changeInLookAngle = Mathf.Clamp01(changeInLookAngle);  // Prevents NaN errors when doing arccos below.
         changeInLookAngle = Mathf.Acos(changeInLookAngle);
 
         lastLookDirection = currentLookDirection;
@@ -165,5 +149,68 @@ public class PlayerController : MonoBehaviour
 
         // Update rigidbody with newly rotated velocity vector
         rb.velocity = newVelocity;
+    }
+
+    /*
+     * In TF2, when in the air and pressing WASD seems a force is applied in the direction of
+       the WASD input relative to the player's current look direction.
+
+       When strafing by holding A or D with the look direction aligned with the current velocity,
+       the air movement force will be perpendicular with the current velocity, and the resulting velocity
+       will have been rotated to the left or right. (Note that the magnitude of the resulting velocity may 
+       be clamped as to not surpass the previous velocity).
+     */
+    void AirMove1()
+    {
+        // Find the direction of the air movement force based on WASD player input
+        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = transform.TransformDirection(moveDirection);  // Make the input vector relative to current look direction
+        moveDirection.Normalize();
+
+        // Add this horizontal air movement force to the player's horizontal velocity
+        Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration 
+            * (rb.velocity.magnitude * AirAccelerationScaling);
+        Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;
+
+        // Clamp the magnitude of the horizontal velocity to not be greater than it was before
+        newHoriVelocity = Vector3.ClampMagnitude(newHoriVelocity, prevHoriVelocity.magnitude);
+
+        rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
+    }
+
+    /*
+     * Same as above, applying an air movement force in the direction of WASD input, but now the force's magnitude
+     * scales with the change in angle of look direction.
+     */ 
+    void AirMove2()
+    {
+        // Find the direction of the air movement force based on WASD player input
+        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = transform.TransformDirection(moveDirection);  // Make the input vector relative to current look direction
+        moveDirection.Normalize();
+
+        // Using the dot product equation, calculate the change in the angle of the current look direction in the x-z plane.
+        // The change in angle will be negative if turning clockwise, positive if counter-clockwise.
+        Vector2 currentLookDirection = new Vector2(transform.forward.x, transform.forward.z);
+        float changeInLookAngle = Vector2.Dot(currentLookDirection, lastLookDirection);
+        changeInLookAngle /= (lastLookDirection.magnitude * currentLookDirection.magnitude);
+        changeInLookAngle = Mathf.Clamp01(changeInLookAngle);  // Prevents NaN errors when doing arccos below.
+        changeInLookAngle = Mathf.Acos(changeInLookAngle);
+
+        lastLookDirection = currentLookDirection;
+
+        // Add this horizontal air movement force to the player's horizontal velocity. Scales with change in look direction.
+        Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration
+            * (rb.velocity.magnitude * AirAccelerationScaling) 
+            * (Input.GetAxis("Horizontal") != 0 ? changeInLookAngle : 1);  // If the players holds the s key ONLY, they should slow down regardless of change in look angle
+        print(airMovementForce);
+        Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;
+
+        // Clamp the magnitude of the horizontal velocity to not be greater than it was before
+        newHoriVelocity = Vector3.ClampMagnitude(newHoriVelocity, prevHoriVelocity.magnitude);
+
+        rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
     }
 }

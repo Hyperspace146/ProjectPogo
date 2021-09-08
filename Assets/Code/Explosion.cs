@@ -8,6 +8,8 @@ using UnityEngine;
  */
 public class Explosion : MonoBehaviour
 {
+    public bool DebugMode = false;
+
     [Tooltip("Maximum magnitude of explosion knockback, which occurs near the center of the explosion.")]
     public float MaxExplosionKnockback;
 
@@ -42,7 +44,7 @@ public class Explosion : MonoBehaviour
         Rigidbody collidingRB = other.gameObject.GetComponent<Rigidbody>();
         if (collidingRB != null)
         {
-            // manual implementation of explosion kb
+            // manual implementation of explosion kb. has issues when player collider is inside the center of the explosion
 
             /*Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
             Vector3 explosionForceDirection = (explosionContactPoint - transform.position).normalized;

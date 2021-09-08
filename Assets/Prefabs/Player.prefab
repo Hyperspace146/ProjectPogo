@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShootPoint: {fileID: 8080800269902718515}
   RocketPrefab: {fileID: 2153355749987532397, guid: b6c7eb411aafe4943be8f3c0205c2ac9, type: 3}
-  RocketSpeed: 100
+  RocketSpeed: 10000
   TimeBeforeDespawn: 10
   DelayBetweenShots: 0.2
   ClipSize: 8
@@ -155,6 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e1a67c3330c674db13d5a419d1c470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AirMoveType: 0
+  AirAcceleration: 12
   GroundAcceleration: 500
   MaxGroundedSpeed: 7
   Friction: 5

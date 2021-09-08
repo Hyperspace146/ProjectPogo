@@ -108,8 +108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b204aa4a1ce8548a83a60d9c4ba844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugMode: 1
   MaxExplosionKnockback: 10
   MinExplosionKnockbackRatio: 0.2
   UpwardLiftModifier: 0.1
-  ExplosionDuration: 0.5
+  ExplosionDuration: 0.3
   MaxDamage: 10
