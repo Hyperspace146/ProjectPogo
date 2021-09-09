@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public float GroundAcceleration = 12;
     public float MaxGroundedSpeed = 15;
     public float Friction = 1;
+    [Tooltip("The length of time in seconds after landing during which friction is temporarily not applied.")]
+    public float FrictionBuffer = 0.1f;
     public float JumpHeight = 5000f;
 
     public Transform GroundCheck;
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
     public float MaxStrafeAnglePerSecond = 180;
 
     private bool isGrounded;
+    private bool applyFriction = false;
     private Vector2 lastLookDirection;
 
     private Rigidbody rb;
@@ -50,9 +53,15 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        isGrounded = Physics.CheckSphere(GroundCheck.position, GroundDist, GroundMask);
+        // If we've just landed, wait a certain time before applying friction
+        bool groundCheck = Physics.CheckSphere(GroundCheck.position, GroundDist, GroundMask);
+        if (!isGrounded && groundCheck)
+        {
+            StartCoroutine(WaitBeforeApplyingFriction(FrictionBuffer));
+        }
 
-        if (isGrounded)
+        isGrounded = groundCheck;
+        if (applyFriction)
         {
             GroundMove();
         }
@@ -71,6 +80,13 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
+    }
+
+    IEnumerator WaitBeforeApplyingFriction(float seconds)
+    {
+        applyFriction = false;
+        yield return new WaitForSeconds(FrictionBuffer);
+        applyFriction = true;
     }
 
     void GroundMove()
@@ -202,8 +218,7 @@ public class PlayerController : MonoBehaviour
 
         // Add this horizontal air movement force to the player's horizontal velocity. Scales with change in look direction.
         Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration
-            * (rb.velocity.magnitude * AirAccelerationScaling) 
-            * (Input.GetAxis("Horizontal") != 0 ? changeInLookAngle : 1);  // If the players holds the s key ONLY, they should slow down regardless of change in look angle
+            * (rb.velocity.magnitude * AirAccelerationScaling) * changeInLookAngle;
         print(airMovementForce);
         Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;

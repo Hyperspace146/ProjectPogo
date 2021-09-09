@@ -109,8 +109,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DebugMode: 1
-  MaxExplosionKnockback: 10
-  MinExplosionKnockbackRatio: 0.2
-  UpwardLiftModifier: 0.1
+  MaxExplosionKnockback: 1300
+  MinExplosionKnockbackRatio: 0.39
+  UpwardLiftModifier: 0
   ExplosionDuration: 0.3
   MaxDamage: 10

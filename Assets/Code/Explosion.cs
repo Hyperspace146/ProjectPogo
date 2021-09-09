@@ -39,7 +39,7 @@ public class Explosion : MonoBehaviour
     }
 
     // "other" represents the object (e.g. player or enemy) colliding with this explosion hitbox
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         Rigidbody collidingRB = other.gameObject.GetComponent<Rigidbody>();
         if (collidingRB != null)
@@ -74,7 +74,7 @@ public class Explosion : MonoBehaviour
             // guarantee a minimum amount of knockback when colliding with the very edge of the collider
             float colliderRadius = (GetComponent<SphereCollider>().radius * transform.localScale.x);
             float explosionRadius = colliderRadius / (1 - MinExplosionKnockbackRatio);
-            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, UpwardLiftModifier, ForceMode.Impulse);
+            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, UpwardLiftModifier, ForceMode.Force);
 
             // Apply damage to non-player objects that decreases based on distance from the center of the explosion
             if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {

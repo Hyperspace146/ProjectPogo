@@ -157,10 +157,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AirMoveType: 0
   AirAcceleration: 12
+  AirAccelerationScaling: 0
   GroundAcceleration: 500
   MaxGroundedSpeed: 7
   Friction: 5
-  JumpHeight: 2000
+  JumpHeight: 4000
   GroundCheck: {fileID: 8080800270128856233}
   GroundDist: 0.4
   GroundMask:
