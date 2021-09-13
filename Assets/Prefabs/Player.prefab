@@ -141,7 +141,7 @@ MonoBehaviour:
   ReloadTime: 0.5
   RocketRaycastTargetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   MaxRocketTargetDistance: 1000
 --- !u!114 &8080800269781301777
 MonoBehaviour:
@@ -161,6 +161,7 @@ MonoBehaviour:
   GroundAcceleration: 500
   MaxGroundedSpeed: 7
   Friction: 5
+  FrictionBuffer: 0.1
   JumpHeight: 4000
   GroundCheck: {fileID: 8080800270128856233}
   GroundDist: 0.4

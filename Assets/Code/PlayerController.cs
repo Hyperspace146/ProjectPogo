@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         {
             GroundMove();
         }
-        else
+        if (!isGrounded)
         {
             switch (AirMoveType)
             {
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator WaitBeforeApplyingFriction(float seconds)
     {
         applyFriction = false;
-        yield return new WaitForSeconds(FrictionBuffer);
+        yield return new WaitForSeconds(seconds);
         applyFriction = true;
     }
 
@@ -219,7 +219,6 @@ public class PlayerController : MonoBehaviour
         // Add this horizontal air movement force to the player's horizontal velocity. Scales with change in look direction.
         Vector3 airMovementForce = moveDirection * Time.fixedDeltaTime * AirAcceleration
             * (rb.velocity.magnitude * AirAccelerationScaling) * changeInLookAngle;
-        print(airMovementForce);
         Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         Vector3 newHoriVelocity = prevHoriVelocity + airMovementForce;
 
