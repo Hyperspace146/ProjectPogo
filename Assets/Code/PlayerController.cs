@@ -30,8 +30,9 @@ public class PlayerController : MonoBehaviour
     public float MaxStrafeAnglePerSecond = 180;
 
     private bool isGrounded;
-    private bool applyFriction = false;
+    public bool applyFriction = false;
     private Vector2 lastLookDirection;
+    private float frictionBufferTimer = 0;
 
     private Rigidbody rb;
     private Collider collider;
@@ -53,14 +54,28 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // If we've just landed, wait a certain time before applying friction
+        frictionBufferTimer += Time.fixedDeltaTime;
         bool groundCheck = Physics.CheckSphere(GroundCheck.position, GroundDist, GroundMask);
-        if (!isGrounded && groundCheck)
+
+        // If we're not grounded, don't apply friction
+        if (!groundCheck)
         {
-            StartCoroutine(WaitBeforeApplyingFriction(FrictionBuffer));
+            applyFriction = false;
+        }
+        // Or if we ARE grounded but was airborne in the last physics step (meaning isGrounded was false),
+        // reset the friction timer because we've just landed on the ground. The timer will wait a certain time before applying friction
+        else if (!isGrounded)
+        {
+            frictionBufferTimer = 0;
+        }
+        // Or if we were grounded for at least the length of time of the friction buffer, apply friction
+        else if (frictionBufferTimer >= FrictionBuffer)
+        {
+            applyFriction = true;
         }
 
         isGrounded = groundCheck;
+
         if (applyFriction)
         {
             GroundMove();
@@ -80,13 +95,6 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
-    }
-
-    IEnumerator WaitBeforeApplyingFriction(float seconds)
-    {
-        applyFriction = false;
-        yield return new WaitForSeconds(seconds);
-        applyFriction = true;
     }
 
     void GroundMove()

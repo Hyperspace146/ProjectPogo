@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 263644751}
   - component: {fileID: 263644750}
   - component: {fileID: 263644749}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Launch Pad (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1102,7 +1102,7 @@ GameObject:
   - component: {fileID: 445943664}
   - component: {fileID: 445943663}
   - component: {fileID: 445943666}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Teleport Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1315,7 +1315,7 @@ GameObject:
   - component: {fileID: 478426902}
   - component: {fileID: 478426901}
   - component: {fileID: 478426904}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Launch Pad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,10 +1507,6 @@ PrefabInstance:
     - target: {fileID: 8080800269781301791, guid: 01287b44a674fcc48af9cb584bc9af4a, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8080800269902718515, guid: 01287b44a674fcc48af9cb584bc9af4a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8080800271294348992, guid: 01287b44a674fcc48af9cb584bc9af4a, type: 3}
       propertyPath: sens
@@ -1996,7 +1992,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 801003794}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Teleport Destination
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2731,7 +2727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1308715958}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Launch Trajectory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3763,7 +3759,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947645993}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Launch Trajectory
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShootPoint: {fileID: 8080800269902718515}
   RocketPrefab: {fileID: 2153355749987532397, guid: b6c7eb411aafe4943be8f3c0205c2ac9, type: 3}
-  RocketSpeed: 10000
+  RocketSpeed: 50
   TimeBeforeDespawn: 10
   DelayBetweenShots: 0.2
   ClipSize: 8
@@ -164,12 +164,13 @@ MonoBehaviour:
   FrictionBuffer: 0.1
   JumpHeight: 4000
   GroundCheck: {fileID: 8080800270128856233}
-  GroundDist: 0.4
+  GroundDist: 0.1
   GroundMask:
     serializedVersion: 2
     m_Bits: 256
   StrafeSpeed: 75
   MaxStrafeAnglePerSecond: 180
+  applyFriction: 0
 --- !u!114 &6969449916977331923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,7 +227,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8080800269902718524}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27, y: 0.3, z: 0.38}
+  m_LocalPosition: {x: 0, y: -0.24, z: 0.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8080800269781301779}

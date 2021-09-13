@@ -55,7 +55,6 @@ public class RocketLauncher : MonoBehaviour
         } 
         else
         {
-            print("ray miss");
             rocketTargetPoint = Camera.main.transform.position + Camera.main.ScreenPointToRay(Input.mousePosition).direction * MaxRocketTargetDistance;
         }
 
