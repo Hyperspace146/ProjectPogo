@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         {
             GroundMove();
         }
-        else
+        if (!isGrounded)
         {
             switch (AirMoveType)
             {

@@ -42,6 +42,8 @@ public class RocketLauncher : MonoBehaviour
     
     public void Shoot()
     {
+        FindObjectOfType<AudioManager>().Play("Shoot");
+
         print("shoot time: " + Time.time);
 
         // Decrease ammo by one shot

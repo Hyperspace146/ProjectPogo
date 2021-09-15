@@ -8,6 +8,7 @@ public class TeleportOnContact : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        FindObjectOfType<AudioManager>().Play("Death");
         collision.transform.position = TeleportDestination.position;
         collision.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
