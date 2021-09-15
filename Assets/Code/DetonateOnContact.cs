@@ -12,8 +12,6 @@ public class DetonateOnContact : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        print("Collision time: " + Time.time);
-
         Instantiate(ExplosionPrefab, collision.GetContact(0).point, Quaternion.identity);
         Destroy(this.gameObject);
     }

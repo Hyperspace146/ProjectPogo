@@ -54,6 +54,7 @@ public class RocketLauncher : MonoBehaviour
         Vector3 rocketTargetPoint;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.ScreenPointToRay(Input.mousePosition).direction, out hit, MaxRocketTargetDistance, RocketRaycastTargetMask))
         {
+            print(hit.collider.name);
             rocketTargetPoint = hit.point;
         } 
         else
@@ -62,10 +63,10 @@ public class RocketLauncher : MonoBehaviour
         }
 
         // Now we find the vector pointing from the SHOOT POINT to where the player's pointing in world space
-        Vector3 shootDirection = rocketTargetPoint - ShootPoint.position;
-        shootDirection.Normalize();
+        Vector3 shootDirection = (rocketTargetPoint - ShootPoint.position).normalized;
 
-        // Now spawn the rocket with velocity in that direction. The rotation calc makes sure it points its head in the direction of shooting.
+        // Now spawn the rocket with velocity to move towards that world space point. The rotation calc makes sure the rocket points its head 
+        // in the direction of shooting.
         GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, shootDirection));
         rocket.GetComponent<Rigidbody>().velocity = shootDirection * RocketSpeed;
 
