@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8080800269781301791}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.47, y: 3.02, z: 0.34}
+  m_LocalPosition: {x: -3.47, y: 3.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8080800271294348995}
@@ -155,9 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e1a67c3330c674db13d5a419d1c470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AirMoveType: 0
-  AirAcceleration: 12
-  AirAccelerationScaling: 0
+  AirMoveType: 3
+  AirAcceleration: 150
+  AirAccelerationScaling: 0.75
   GroundAcceleration: 500
   MaxGroundedSpeed: 7
   Friction: 5
@@ -170,6 +170,7 @@ MonoBehaviour:
     m_Bits: 256
   StrafeSpeed: 75
   MaxStrafeAnglePerSecond: 180
+  AirSpeedLimit: 1.3
   applyFriction: 0
 --- !u!114 &6969449916977331923
 MonoBehaviour:
@@ -227,7 +228,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8080800269902718524}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.24, z: 0.21}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8080800269781301779}
@@ -290,7 +291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8080800271294349004}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.65, z: -0.81}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8080800269781301779}

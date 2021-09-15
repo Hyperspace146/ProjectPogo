@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Maximum angle in degrees that you can strafe in one second.")]
     public float MaxStrafeAnglePerSecond = 180;
 
+    [Tooltip("Used in AirMove3. Air acceleration is only applied if the magnitude of the projection of current velocity " +
+        "on air acceleration is less than this maximum value.")]
+    public float AirSpeedLimit;
+
     private bool isGrounded;
     public bool applyFriction = false;
     private Vector2 lastLookDirection;
@@ -92,6 +96,9 @@ public class PlayerController : MonoBehaviour
                     break;
                 case 2:
                     AirMove2();
+                    break;
+                case 3:
+                    AirMove3();
                     break;
             }
         }
@@ -205,7 +212,8 @@ public class PlayerController : MonoBehaviour
 
     /*
      * Same as above, applying an air movement force in the direction of WASD input, but now the force's magnitude
-     * scales with the change in angle of look direction.
+     * scales with the change in angle of look direction. Suffers from an inability to slow down/air control while not
+     * moving the mouse.
      */ 
     void AirMove2()
     {
@@ -232,6 +240,53 @@ public class PlayerController : MonoBehaviour
 
         // Clamp the magnitude of the horizontal velocity to not be greater than it was before
         newHoriVelocity = Vector3.ClampMagnitude(newHoriVelocity, prevHoriVelocity.magnitude);
+
+        rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
+    }
+
+    /*
+     * A direct imitation of TF2 air movement, using this guide: https://steamcommunity.com/sharedfiles/filedetails/?id=184184420
+     * 
+     * Similar to AirMove1(), where an acceleration/air movement force based on WASD input is applied with every physics step.
+     * However, whether or not this force is applied based on whether the magnitude of the vector projection |v proj a| = |v|cos(theta)
+     * is under the air speed limit (v is velocity, a is acceleration).
+     * 
+     * Remember, the magnitude of the projection will increase when v increases and when cos(theta) is close to 1 or -1. Manipulating 
+     * theta and thus cos(theta) by moving our crosshair left or right allows us to keep |v proj a| under the speed limit.
+     */
+     void AirMove3()
+    {
+        // Find the direction of the air movement force based on WASD player input
+        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = transform.TransformDirection(moveDirection);  // Make the input vector relative to current look direction
+        moveDirection.Normalize();
+
+        Vector3 accel = moveDirection * AirAcceleration * Time.fixedDeltaTime;
+
+        Vector3 prevHoriVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        float angle = Vector3.Angle(prevHoriVelocity, moveDirection);   // The angle between v and a
+        float projMag = rb.velocity.magnitude * Mathf.Cos(angle * Mathf.Deg2Rad);       // |v proj a| = |v|cos(theta)
+
+        Vector3 newHoriVelocity;
+        // If the magnitude of the projection is under the speed limit enough to apply full
+        // accel, then apply full accel
+        if (projMag < AirSpeedLimit - accel.magnitude)
+        {
+            newHoriVelocity = prevHoriVelocity + accel;
+        }
+        // If the magnitude of the projection is under the limit but not enough to apply full
+        // accel, then apply partial accel
+        else if (projMag < AirSpeedLimit)
+        {
+            newHoriVelocity = prevHoriVelocity + (AirSpeedLimit - projMag) * accel / accel.magnitude;
+        }
+        // And if the magnitude of the projection is greater than the limit, don't accel.
+        else
+        {
+            newHoriVelocity = prevHoriVelocity;
+        }
+
+        print(Mathf.Cos(angle));
 
         rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
     }
