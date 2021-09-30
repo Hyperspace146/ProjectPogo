@@ -33,16 +33,20 @@ public class PlayerController : MonoBehaviour
         "on air acceleration is less than this maximum value.")]
     public float AirSpeedLimit;
 
+    public bool InputDisabled = false;
+
     private bool isGrounded;
     public bool applyFriction = false;
     private Vector2 lastLookDirection;
     private float frictionBufferTimer = 0;
 
+    private RocketLauncher rocketLauncher;
     private Rigidbody rb;
     private Collider collider;
 
     private void Start()
     {
+        rocketLauncher = GetComponent<RocketLauncher>();
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         lastLookDirection = new Vector2(transform.forward.x, transform.forward.z);
@@ -50,9 +54,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (!InputDisabled)
         {
-            rb.AddForce(Vector3.up * Mathf.Sqrt(JumpHeight * -2f * Physics.gravity.y));
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                rb.AddForce(Vector3.up * Mathf.Sqrt(JumpHeight * -2f * Physics.gravity.y) * Time.fixedDeltaTime);
+            }
+
+            if (Input.GetButtonDown("Fire1"))
+            {
+                rocketLauncher.TryShoot();
+            }
         }
     }
 
@@ -268,25 +280,26 @@ public class PlayerController : MonoBehaviour
         float projMag = rb.velocity.magnitude * Mathf.Cos(angle * Mathf.Deg2Rad);       // |v proj a| = |v|cos(theta)
 
         Vector3 newHoriVelocity;
+
         // If the magnitude of the projection is under the speed limit enough to apply full
         // accel, then apply full accel
         if (projMag < AirSpeedLimit - accel.magnitude)
         {
             newHoriVelocity = prevHoriVelocity + accel;
         }
+
         // If the magnitude of the projection is under the limit but not enough to apply full
         // accel, then apply partial accel
         else if (projMag < AirSpeedLimit)
         {
             newHoriVelocity = prevHoriVelocity + (AirSpeedLimit - projMag) * accel / accel.magnitude;
         }
+
         // And if the magnitude of the projection is greater than the limit, don't accel.
         else
         {
             newHoriVelocity = prevHoriVelocity;
         }
-
-        print(Mathf.Cos(angle));
 
         rb.velocity = new Vector3(newHoriVelocity.x, rb.velocity.y, newHoriVelocity.z);
     }

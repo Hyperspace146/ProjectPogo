@@ -28,20 +28,22 @@ public class RocketLauncher : MonoBehaviour
     [Tooltip("The max distance in world space units for the rocket raycast to find a target.")]
     public float MaxRocketTargetDistance = 1000;
 
+    public GameObject ExplosionPrefab;
+
     private float lastTimeShot;
 
     void Update()
     {
-        if ((Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.L)) && CurrentAmmo >= 1 && lastTimeShot + DelayBetweenShots < Time.time)
-        {
-            Shoot();
-        }
-
         CurrentAmmo = Mathf.Min(ClipSize, CurrentAmmo + (Time.deltaTime / ReloadTime));
     }
     
-    public void Shoot()
+    public void TryShoot()
     {
+        if (CurrentAmmo < 1 && lastTimeShot + DelayBetweenShots >= Time.time)
+        {
+            return;
+        }
+
         // Decrease ammo by one shot
         CurrentAmmo -= 1;
 
@@ -50,7 +52,6 @@ public class RocketLauncher : MonoBehaviour
         Vector3 rocketTargetPoint;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.ScreenPointToRay(Input.mousePosition).direction, out hit, MaxRocketTargetDistance, RocketRaycastTargetMask))
         {
-            print(hit.collider.name);
             rocketTargetPoint = hit.point;
         } 
         else
@@ -61,6 +62,7 @@ public class RocketLauncher : MonoBehaviour
         // Now we find the vector pointing from the SHOOT POINT to where the player's pointing in world space
         Vector3 shootDirection = (rocketTargetPoint - ShootPoint.position).normalized;
 
+        
         // Now spawn the rocket with velocity to move towards that world space point. The rotation calc makes sure the rocket points its head 
         // in the direction of shooting.
         GameObject rocket = Instantiate(RocketPrefab, ShootPoint.position, Quaternion.FromToRotation(Vector3.up, shootDirection));
@@ -71,6 +73,8 @@ public class RocketLauncher : MonoBehaviour
 
         // Update last time shot to now
         lastTimeShot = Time.time;
+
+        FindObjectOfType<DebugRocketExplosionTime>().RecordShootTime(Time.time);
     }
 
     IEnumerator DespawnRocket(GameObject rocket, float seconds)

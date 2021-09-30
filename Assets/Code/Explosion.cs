@@ -74,7 +74,9 @@ public class Explosion : MonoBehaviour
             // guarantee a minimum amount of knockback when colliding with the very edge of the collider
             float colliderRadius = (GetComponent<SphereCollider>().radius * transform.localScale.x);
             float explosionRadius = colliderRadius / (1 - MinExplosionKnockbackRatio);
-            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, UpwardLiftModifier, ForceMode.Force);
+            collidingRB.AddExplosionForce(MaxExplosionKnockback, transform.position, explosionRadius, UpwardLiftModifier, ForceMode.Impulse);
+
+            FindObjectOfType<DebugRocketExplosionTime>().RecordExplosionTime(Time.time);
 
             // Apply damage to non-player objects that decreases based on distance from the center of the explosion
             if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
