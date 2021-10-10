@@ -29,6 +29,7 @@ public class Explosion : MonoBehaviour
 
     private void Start()
     {
+        FindObjectOfType<AudioManager>().Play("Explosion");
         StartCoroutine(DestroyAfterTime(ExplosionDuration));
     }
 

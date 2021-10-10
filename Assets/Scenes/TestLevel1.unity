@@ -1786,7 +1786,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 357219009}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -3309,7 +3309,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689154245}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4325,6 +4325,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportDestination: {fileID: 304963170}
+--- !u!1 &891415605 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8080800271294349004, guid: 01287b44a674fcc48af9cb584bc9af4a, type: 3}
+  m_PrefabInstance: {fileID: 559876425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &891415609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891415605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d89feaec7b8fec49ae1e49bb5e6cab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Shoot
+    clip: {fileID: 8300000, guid: f1cdb17644a2f5d4f883b83715c56acf, type: 3}
+    volume: 0.081
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Explosion
+    clip: {fileID: 8300000, guid: 71dd36d4cce3e5748ae202b4d9ee6bbf, type: 3}
+    volume: 0.069
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Theme
+    clip: {fileID: 8300000, guid: 4452c5f3e2486034cb7d0c8ba291a5a0, type: 3}
+    volume: 0.035
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
 --- !u!1 &900616046
 GameObject:
   m_ObjectHideFlags: 0
@@ -4520,7 +4556,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938021557}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5341,7 +5377,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1147813766}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6178,7 +6214,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1296663314}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -7428,7 +7464,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8080800271294348992, guid: 01287b44a674fcc48af9cb584bc9af4a, type: 3}
   m_PrefabInstance: {fileID: 559876425}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 891415605}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 119d19a63972b5746b46edad921bb505, type: 3}
@@ -7601,7 +7637,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749919431}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}

@@ -44,6 +44,9 @@ public class RocketLauncher : MonoBehaviour
             return;
         }
 
+        FindObjectOfType<AudioManager>().Play("Shoot");
+
+
         // Decrease ammo by one shot
         CurrentAmmo -= 1;
 
