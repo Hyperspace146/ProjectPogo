@@ -80,19 +80,24 @@ public class Explosion : MonoBehaviour
             FindObjectOfType<DebugRocketExplosionTime>().RecordExplosionTime(Time.time);
 
             // Apply damage to non-player objects that decreases based on distance from the center of the explosion
-            if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                return;
-            }
+            //if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
+            //    return;
+            //}
 
             Vector3 explosionContactPoint = other.ClosestPointOnBounds(transform.position);
             float distance = Vector3.Distance(explosionContactPoint, transform.position);
             float damageRatio = 1.0F - Mathf.Clamp01(distance / colliderRadius);
             int damage = (int) (MaxDamage * damageRatio);
 
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            {
+                damage = 0;
+            }
+
             Health victimHealth = other.GetComponent<Health>();
             if (victimHealth != null)
             {
-                victimHealth.ChangeHealth(-damage);
+                victimHealth.TakeDamage(damage, explosionContactPoint);
             }
         }
     }
